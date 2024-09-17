@@ -1,82 +1,85 @@
-var createError = require("http-errors");
 var express = require("express");
+const fs = require('fs');
+var session = require('express-session');
+var bodyParser = require('body-parser');
+var router = require('./router');
+const cors = require('cors');
+const createProxyMiddleware = require('http-proxy-middleware');
 
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-
-var proRouter = require("./routes/product");
-var cateRouter = require("./routes/categories");
-// var usersRouter = require("./routes/users");
-// var searchRouter = require("./routes/search");
-
-var cors = require("cors");
+if (!fs.existsSync('./uploads')) {
+    fs.mkdirSync('./uploads');
+}
 
 var app = express();
 app.set("view engine", "ejs");
-//  khai bao thu vien
-const mongoose = require("mongoose");
-require("./modal/categoryModal");
-require("./modal/productModal");
-require("./modal/userModal");
 
-// ket noi db
-mongoose
-  .connect("mongodb://localhost:27017/duAn", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb://localhost:27017/duAn")
   .then(() => console.log(">>>>>>>>>> DB Connected!!!!!!"))
   .catch((err) => console.log(">>>>>>>>> DB Error: ", err));
 
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "hbs");
-// app.use(cors({
-//   origin: '*', // Wildcard is NOT for Production
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   credentials: true,
-// }));
-
-app.use(logger("dev"));
+require('dotenv').config();
+app.use(session({ secret: 'ssshhhhh', saveUninitialized: true, resave: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
-//  cau hình cors
+const corsOptions = {
+  origin: process.env.CORS_OPTIONS
+};
+app.use(cors(corsOptions));
 
-// khai bao router
-app.use(cors());
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
+if (process.env.HTTP_PROXY_MIDDLEWARE) {
+  const options = {
+      target: process.env.HTTP_PROXY_MIDDLEWARE,
+      changeOrigin: true,
+      ws: true,
+      pathRewrite: {
+          '^/': ''
+      }
+  };
+  const httpProxyMiddleware = createProxyMiddleware(options);
+  app.use(httpProxyMiddleware);
+}
+
+router(app);
+
+const options = {
+  swaggerDefinition: {
+      info: {
+          description: '',
+          title: 'Du An',
+          version: '1.0.0'
+      },
+      host: process.env.HOST + ':' + process.env.PORT,
+      basePath: '/api',
+      produces: [
+          'application/json'
+      ],
+      schemes: ['http', 'https'],
+      securityDefinitions: {
+          JWT: {
+              type: 'apiKey',
+              in: 'header',
+              name: 'x-access-token',
+              description: 'Bearer + access_token'
+          }
+      }
+  },
+  basedir: __dirname,
+  files: ['./app/**/*.js']
+};
+const expressSwagger = require('express-swagger-generator')(app);
+expressSwagger(options);
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
-app.use("/pro", proRouter);
-app.use("/cate", cateRouter);
 
-// app.use("/user", usersRouter);
-// app.use("/search", searchRouter);
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
-//
-
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+app.listen(process.env.PORT || 4003 , () => {
+  console.log('Server is running with url ' + process.env.HOST + ':' + process.env.PORT);
 });
 
 module.exports = app;
