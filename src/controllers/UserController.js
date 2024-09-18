@@ -11,8 +11,8 @@ const getAllUsers = async (req, res) => {
 
 const createUser =  async (req, res) => {
     try {
-        const { email, password, role } = req.body
-        if (!email || !password || !role) {
+        const { useremail, password,  } = req.body
+        if (!useremail || !password || ) {
             return res.json({ message: 'Missing required fields' });
         }
         const newUser = await userService.createUserService(req.body);

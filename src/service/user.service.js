@@ -1,5 +1,5 @@
 //  xu ly logic o day 
-const User = require('../models/UserModel')
+const userModel = require('../models/UserModel')
 
 //  @Get
 const getAllUsersService = async () => {
@@ -13,7 +13,7 @@ const getAllUsersService = async () => {
 const createUserService = async(userData)=>{
     try{
         const hashedPassword = await bcypt.hash(userData.password,10)
-        const newUser = new User({ ...userData, password:hashedPassword})
+        const newUser = new userModel({ ...userData, password:hashedPassword})
         return await newUser.save()
     }catch(error){
         throw new Error('Unable to create user');
