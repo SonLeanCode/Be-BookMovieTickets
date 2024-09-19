@@ -4,28 +4,33 @@ const UserModel = require('../models/UserModel');
 const TokenModel = require('../models/TokenModel');
 const DEFAULT = require('../constants/defaultConstants')
 const verifyToken = async (req, res, next) => {
-    const authHeader = req.header(DEFAULT.TOKEN_TYPE)
-    const token = authHeader && authHeader.split(' ')[1]
+    const authHeader = req.header(DEFAULT.TOKEN_TYPE);
+    const token = authHeader && authHeader.split(' ')[1];
+
+    // Nếu không có token
     if (!token) {
-        return res.status(400).json({ success: false, message: 'Access token not found' })
-    }
-    const accessToken = authHeader.split(' ')[1]
-    const tokenModel = await TokenModel.findOne({ accessToken }).exec().then((model) => model)
-    if (tokenModel && Date.now() > (parseInt(tokenModel.expireTime) * 1000)) {
-        return res.status(400).json({ success: true, message: 'Token has expired. Please login again!' })
+        return res.status(400).json({ success: false, message: 'Access token not found' });
     }
     try {
-        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-        const user = await UserModel.findById(decoded.userId)
-        req.userId = decoded.userId
-        req.role = decoded.role
-        req.email = decoded.email
-        req.user = user
-        next()
+        // Kiểm tra token trong cơ sở dữ liệu
+        const tokenModel = await TokenModel.findOne({ accessToken: token }).exec();
+        if (tokenModel && Date.now() > (parseInt(tokenModel.expireTime) * 1000)) {
+            return res.status(400).json({ success: false, message: 'Token has expired. Please login again!' });
+        }
+        // Giải mã token và lấy thông tin người dùng
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const user = await UserModel.findById(decoded.userId);
+        // Gán các giá trị vào req để tiếp tục sử dụng
+        req.userId = decoded.userId;
+        req.role = decoded.role;
+        req.email = decoded.email;
+        req.user = user;
+        next();
     } catch (e) {
-        return res.status(403).json({ success: false, message: 'Invalid Token' }); // Sửa ở đây
+        return res.status(403).json({ success: false, message: 'Invalid Token' });
     }
-}
+};
+
 // * MANAGER
 const verifyManager = (req, res, next) => {
     const authHeader = req.header(DEFAULT.TOKEN_TYPE)

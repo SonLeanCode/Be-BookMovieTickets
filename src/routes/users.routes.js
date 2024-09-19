@@ -4,7 +4,7 @@ const userController =  require('../controllers/UserController');
 const { verifyToken,verifyManager } = require('../middleware/auth');
 
 router.get('/users', verifyToken, userController.getAllUsers)
-router.post('/users',verifyToken,verifyManager,userController.createUser)
+router.post('/users',verifyToken,userController.createUser)
 
 
 
