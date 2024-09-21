@@ -11,16 +11,16 @@ const getAllUsers = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-    const { useremail, password, role, lastname, firstname } = req.body;
-
+    const { useremail, password, role, lastname, firstname } = req.body; 
+    console.log(useremail,password);
+    
     if (!useremail || !password || !role || !lastname || !firstname) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
 
     try {
-        // Gọi service để xử lý logic tạo người dùng
         const { success, message, newUser, accessToken } = await userService.createUserService(req.body);
-
+       
         if (!success) {
             return res.status(400).json({ success: false, message });
         }
