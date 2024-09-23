@@ -2,31 +2,36 @@ const MovieSticketsModel = require('../models/MovieSticketsModel')
 const movieSticketsModel = require('../models/MovieSticketsModel')
 
 //@Get service
-const getAllMovieService = async (searchQuery) => {
-    // search like 
-    let query = {}
+const getAllMovieService = async ({ nameMovie, actor, producer }) => {
+
+    let query = {};
     try {
-        if (searchQuery && searchQuery.trim() !== '') {
-            query = {
-                $or: [
-                    //search  3 field này 
-                    { nameMovie: { $regex: searchQuery, $options: 'i' } },
-                    { actor: { $regex: searchQuery, $options: 'i' } },
-                    { producer: { $regex: searchQuery, $options: 'i' } }
-
-                ]
-
-            }
+        const orConditions = [];
+        if (nameMovie && nameMovie.trim() !== '') {
+            orConditions.push({ nameMovie: { $regex: nameMovie, $options: 'i' } });
         }
-        const movie = await movieSticketsModel.find(query)
+        if (actor && actor.trim() !== '') {
+            orConditions.push({ actor: { $regex: actor, $options: 'i' } });
+        }
+        if (producer && producer.trim() !== '') {
+            orConditions.push({ producer: { $regex: producer, $options: 'i' } });
+        }
+        if (orConditions.length > 0) {
+            query = { $or: orConditions };
+        }
+        // Tìm kiếm phim theo query
+        const movies = await movieSticketsModel.find(query);
+        console.log('Movies found:', movies);
 
-
-        return movie
+        return movies;
     } catch (error) {
-        console.error('Error in Service', error)
-        throw new Error('Unable to get movie')
+        console.error('Error in Service', error);
+        throw new Error('Unable to get movie');
     }
-}
+};
+
+
+
 //@Get:id
 const getIdMovieService = async (_id) => {
     try {

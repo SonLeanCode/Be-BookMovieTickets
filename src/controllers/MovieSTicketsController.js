@@ -8,10 +8,11 @@ const { deleteMovieService } = require('../service/movieStickets.service')
 const getAllMovie = async (req, res) => {
     try {
         // search like
-        const searchQuery = req.query.search || ''
-        
-        
-        const movie = await getAllMovieService(searchQuery)
+       const { nameMovie, actor, producer } = req.query
+        // check đầu vào  3 field
+       if (!nameMovie && !actor && !producer) {
+        return res.status(400).json({ message: 'At least one search parameter is required (nameMovie, actor, producer)' });  }
+        const movie = await getAllMovieService({ nameMovie, actor, producer })
         if (!movie || movie.length === 0) {
             return res.status(400).json({ message: 'Not found get data' })
         }
@@ -41,8 +42,8 @@ const getIdMovie = async (req, res) => {
 //@Post 
 const postMovie = async (req, res) => {
 
-    const { image, nameMovie, description, director, price, actor, producer,rating,duration,title,release_date } = req.body
-    const postMovieData = { image, nameMovie, description, director, price, actor, producer,rating,duration,title,release_date }
+    const { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date } = req.body
+    const postMovieData = { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date }
 
     // check  trường 
     const missingFields = Object.keys(movieDataController).filter(field => !postMovieData[field]);
@@ -63,8 +64,8 @@ const patchMovie = async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'not found id patch' })
     }
-    const { image, nameMovie, description, director, price, actor, producer,rating,duration,title,release_date } = req.body
-    const patchMovieData = { image, nameMovie, description, director, price, actor, producer,rating,duration,title,release_date }
+    const { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date } = req.body
+    const patchMovieData = { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date }
     try {
         const movieUpdate = await patchMovieService(id, patchMovieData)
         res.status(200).json({ success: true, message: 'Path movie successfully', movieUpdate })
