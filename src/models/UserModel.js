@@ -7,7 +7,7 @@ const {CHECKTEXT} = require('../constants/validationContants')
 
 const  userSchema =  new Schema({
     id:{type:ObjectId},
-    useremail:{
+    email:{
         type:String,
         required:[true,'Email required'],
         unique:true,
@@ -37,16 +37,15 @@ const  userSchema =  new Schema({
             enum:['en','vi']
         }
     },
-    lastname:{
-        type:String,
-        required: [true, 'Lastname is required'],
-        validate:CHECKTEXT
-    },
-    firstname:{
-        type:String,
-        required:[true,'Firstname is required'],
-        validate:CHECKTEXT
-    }
+   full_name:{
+    type:String
+   },
+   phone:{
+    type:String
+   },
+   created_at:{
+    type:String
+   }
 
 })
 module.exports = mongoose.models.user || mongoose.model("user",userSchema)

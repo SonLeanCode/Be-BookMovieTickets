@@ -4,11 +4,11 @@ const { Schema } = mongoose;  // Cần lấy `Schema` từ `mongoose`
 const movieSticketSchema = new Schema({
     image: {
         type: String,
-     // Có thể thêm điều kiện bắt buộc
+        // Có thể thêm điều kiện bắt buộc
     },
     nameMovie: {
         type: String,
-        
+
     },
     description: {
         type: String,
@@ -24,6 +24,18 @@ const movieSticketSchema = new Schema({
     },
     producer: {
         type: String,
+    },
+    rating: {
+        type: Number
+    },
+    duration:{
+        type:Number
+    },
+    title:{
+        type:String
+    },
+    release_date:{
+        type:Date
     }
 });
 

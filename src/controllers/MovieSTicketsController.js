@@ -7,9 +7,11 @@ const { deleteMovieService } = require('../service/movieStickets.service')
 // @Get  sản phẩm ra trang chủ 
 const getAllMovie = async (req, res) => {
     try {
-        const movie = await getAllMovieService()
-        console.log('data', movie);
-
+        // search like
+        const searchQuery = req.query.search || ''
+        
+        
+        const movie = await getAllMovieService(searchQuery)
         if (!movie || movie.length === 0) {
             return res.status(400).json({ message: 'Not found get data' })
         }
@@ -39,8 +41,8 @@ const getIdMovie = async (req, res) => {
 //@Post 
 const postMovie = async (req, res) => {
 
-    const { image, nameMovie, description, director, price, actor, producer } = req.body
-    const postMovieData = { image, nameMovie, description, director, price, actor, producer }
+    const { image, nameMovie, description, director, price, actor, producer,rating,duration,title,release_date } = req.body
+    const postMovieData = { image, nameMovie, description, director, price, actor, producer,rating,duration,title,release_date }
 
     // check  trường 
     const missingFields = Object.keys(movieDataController).filter(field => !postMovieData[field]);
@@ -58,8 +60,11 @@ const postMovie = async (req, res) => {
 //@Path 
 const patchMovie = async (req, res) => {
     const { id } = req.params
-    const { image, nameMovie, description, director, price, actor, producer } = req.body
-    const patchMovieData = { image, nameMovie, description, director, price, actor, producer }
+    if (!id) {
+        return res.status(400).json({ message: 'not found id patch' })
+    }
+    const { image, nameMovie, description, director, price, actor, producer,rating,duration,title,release_date } = req.body
+    const patchMovieData = { image, nameMovie, description, director, price, actor, producer,rating,duration,title,release_date }
     try {
         const movieUpdate = await patchMovieService(id, patchMovieData)
         res.status(200).json({ success: true, message: 'Path movie successfully', movieUpdate })
@@ -70,10 +75,13 @@ const patchMovie = async (req, res) => {
 //@Delete 
 const deleteMovie = async (req, res) => {
     const { id } = req.params
+    if (!id) {
+        return res.status(400).json({ message: 'not found id del' })
+    }
     try {
-         await deleteMovieService(id)
-        res.status(200).json({ success: true, message: 'Movie deleted successfully'})
-    } catch(error) {
+        await deleteMovieService(id)
+        res.status(200).json({ success: true, message: 'Movie deleted successfully' })
+    } catch (error) {
         return res.status(400).json({ message: error.message });
     }
 

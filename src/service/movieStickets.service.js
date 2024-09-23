@@ -2,9 +2,25 @@ const MovieSticketsModel = require('../models/MovieSticketsModel')
 const movieSticketsModel = require('../models/MovieSticketsModel')
 
 //@Get service
-const getAllMovieService = async () => {
+const getAllMovieService = async (searchQuery) => {
+    // search like 
+    let query = {}
     try {
-        const movie = await movieSticketsModel.find({})
+        if (searchQuery && searchQuery.trim() !== '') {
+            query = {
+                $or: [
+                    //search  3 field này 
+                    { nameMovie: { $regex: searchQuery, $options: 'i' } },
+                    { actor: { $regex: searchQuery, $options: 'i' } },
+                    { producer: { $regex: searchQuery, $options: 'i' } }
+
+                ]
+
+            }
+        }
+        const movie = await movieSticketsModel.find(query)
+
+
         return movie
     } catch (error) {
         console.error('Error in Service', error)
@@ -38,7 +54,11 @@ const postMovieService = async (data) => {
             director: data.director,
             price: data.price,
             actor: data.actor,
-            producer: data.producer
+            producer: data.producer,
+            rating: data.rating,
+            duration: data.duration,
+            title: data.title,
+            release_date: data.release_date
         })
         const dataMovie = await module.save();
 
@@ -58,13 +78,19 @@ const patchMovieService = async (_id, data) => {
     }
     try {
         const updateID = await movieSticketsModel.findByIdAndUpdate(_id, {
+            // check bằng undefined để kiểm tra  dữ liệu trước kì  cập nhật  k  xác định hoạc undefined thì  nó sẽ đặt thành là null
+            // làm mất dữ liệu trong trường    => nói chung check undefind để tránh  dữ liệu là null 
             image: data.image !== undefined ? data.image : undefined,
             nameMovie: data.nameMovie !== undefined ? data.nameMovie : undefined,
             description: data.description !== undefined ? data.description : undefined,
             director: data.director !== undefined ? data.director : undefined,
             price: data.price !== undefined ? data.price : undefined,
             actor: data.actor !== undefined ? data.actor : undefined,
-            producer: data.producer !== undefined ? data.producer : undefined
+            producer: data.producer !== undefined ? data.producer : undefined,
+            rating: data.rating !== undefined ? data.rating : undefined,
+            duration: data.duration !== undefined ? data.duration : undefined,
+            title: data.title !== undefined ? data.title : undefined,
+            release_date: data.release_date !== undefined ? data.release_date : undefined
         }, { new: true }) // new :true trả về kết quả dc sau khi cập nhật nên kh cần dùng tới save 
 
         return updateID
@@ -88,11 +114,11 @@ const deleteMovieService = async (_id) => {
         throw new Error('Unable to delete movie');
     }
 }
-    module.exports = {
-        getAllMovieService,
-        postMovieService,
-        getIdMovieService,
-        patchMovieService,
-        deleteMovieService
+module.exports = {
+    getAllMovieService,
+    postMovieService,
+    getIdMovieService,
+    patchMovieService,
+    deleteMovieService
 
-    }
+}
