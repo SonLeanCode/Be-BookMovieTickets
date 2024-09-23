@@ -7,20 +7,21 @@ const { deleteMovieService } = require('../service/movieStickets.service')
 // @Get  sản phẩm ra trang chủ 
 const getAllMovie = async (req, res) => {
     try {
-        // search like
-       const { nameMovie, actor, producer } = req.query
-        // check đầu vào  3 field
-       if (!nameMovie && !actor && !producer) {
-        return res.status(400).json({ message: 'At least one search parameter is required (nameMovie, actor, producer)' });  }
-        const movie = await getAllMovieService({ nameMovie, actor, producer })
-        if (!movie || movie.length === 0) {
-            return res.status(400).json({ message: 'Not found get data' })
+        const { nameMovie, actor, producer } = req.query;
+        if (!nameMovie && !actor && !producer) {
+            const allMovies = await getAllMovieService({}); 
+            return res.status(200).json({ success: true, message: 'Get all movies successfully', movies: allMovies });
         }
-        return res.status(200).json({ success: true, message: 'Get movie successfully', movie })
+        const movie = await getAllMovieService({ nameMovie, actor, producer });
+        if (!movie || movie.length === 0) {
+            return res.status(400).json({ message: 'Not found get data' });
+        }
+        return res.status(200).json({ success: true, message: 'Get movie successfully', movie });
     } catch (error) {
-        res.status(400).json({ message: error.message })
+        res.status(400).json({ message: error.message });
     }
-}
+};
+
 //@Get:id 
 const getIdMovie = async (req, res) => {
     const { id } = req.params

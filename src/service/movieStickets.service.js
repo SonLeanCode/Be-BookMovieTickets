@@ -3,26 +3,25 @@ const movieSticketsModel = require('../models/MovieSticketsModel')
 
 //@Get service
 const getAllMovieService = async ({ nameMovie, actor, producer }) => {
+    console.log('Search Query:', { nameMovie, actor, producer });
 
     let query = {};
     try {
-        const orConditions = [];
         if (nameMovie && nameMovie.trim() !== '') {
-            orConditions.push({ nameMovie: { $regex: nameMovie, $options: 'i' } });
+            query.nameMovie = { $regex: '.*' + nameMovie + '.*', $options: 'i' };
         }
         if (actor && actor.trim() !== '') {
-            orConditions.push({ actor: { $regex: actor, $options: 'i' } });
+            query.actor = { $regex: '.*' + actor + '.*', $options: 'i' };
         }
         if (producer && producer.trim() !== '') {
-            orConditions.push({ producer: { $regex: producer, $options: 'i' } });
+            query.producer = { $regex:'.*'+ producer + '.*', $options: 'i' };
         }
-        if (orConditions.length > 0) {
-            query = { $or: orConditions };
-        }
+
         // Tìm kiếm phim theo query
         const movies = await movieSticketsModel.find(query);
-        console.log('Movies found:', movies);
 
+        // Kiểm tra kết quả
+        console.log('Movies found:', movies);
         return movies;
     } catch (error) {
         console.error('Error in Service', error);
