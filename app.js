@@ -20,13 +20,15 @@ mongoose.connect("mongodb://localhost:27017/duAn")
   .catch((err) => console.log(">>>>>>>>> DB Error: ", err));
 
 require('dotenv').config();
-app.use(session({ secret: 'ssshhhhh', saveUninitialized: true, resave: true }));
+app.use(session({ secret: 'ssshhhhh', saveUninitialized: true, resave: true }));  
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
 
 const corsOptions = {
-  origin: process.env.CORS_OPTIONS
+  origin: process.env.CORS_OPTIONS,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
 };
 app.use(cors(corsOptions));
 
@@ -44,6 +46,10 @@ if (process.env.HTTP_PROXY_MIDDLEWARE) {
 }
 
 router(app);
+
+app.get('/test-cors', (req, res) => {
+  res.json({ message: 'CORS is working!' });
+});
 
 const options = {
   swaggerDefinition: {
@@ -77,6 +83,9 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+
+
 
 app.listen(process.env.PORT || 4003 , () => {
   console.log('Server is running with url ' + process.env.HOST + ':' + process.env.PORT);

@@ -11,7 +11,7 @@ const getAllMovie = async (req, res) => {
         if (!nameMovie && !actor && !producer) {
             const allMovies = await getAllMovieService({}); 
             return res.status(200).json({ success: true, message: 'Get all movies successfully', movies: allMovies });
-        }
+        }   
         const movie = await getAllMovieService({ nameMovie, actor, producer });
         if (!movie || movie.length === 0) {
             return res.status(400).json({ message: 'Not found get data' });
