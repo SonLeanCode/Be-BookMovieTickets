@@ -11,25 +11,31 @@ const getAllUsers = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-    const { useremail, password, role, fullname } = req.body; 
-    console.log(useremail ,password);
-    
-    if (!useremail || !password || !role || !fullname) {
+    // Lấy dữ liệu từ request body
+    const { email, password, fullname } = req.body;
+    // Kiểm tra các trường bắt buộc
+    if (!email || !password || !fullname) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
 
     try {
-        const { success, message, newUser, accessToken } = await userService.createUserService(req.body);
+        // Gọi service để tạo người dùng
+        const { success, message, newUser, accessToken } = await userService.createUserService(
+            req.body
+        );
        
         if (!success) {
             return res.status(400).json({ success: false, message });
         }
 
+        // Phản hồi lại kết quả thành công
         return res.status(200).json({ success: true, message: 'User created successfully', newUser, accessToken });
     } catch (error) {
+        // Phản hồi lỗi máy chủ nếu có lỗi xảy ra
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
 const loginUser = async (req, res) => {
     const { email, password } = req.body;

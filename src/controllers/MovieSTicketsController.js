@@ -1,4 +1,3 @@
-
 const { getAllMovieService } = require('../service/movieStickets.service')
 const { getIdMovieService } = require('../service/movieStickets.service')
 const { postMovieService } = require('../service/movieStickets.service')

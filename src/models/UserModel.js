@@ -1,21 +1,15 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
 const validators = require("validator");
-const { CHECKTEXT } = require("../constants/validationContants");
 
 const userSchema = new Schema({
   email: {
     type: String,
-    required: [true, "Email required"],
+    required: [true, "Email is required"],
     unique: true,
     trim: true,
-    minLength: 3,
-    maxLength: 50,
     validate: {
-      validator: function (v) {
-        return validators.isEmail(v);
-      },
+      validator: validators.isEmail,
       message: "Please enter a valid email",
     },
   },
@@ -37,9 +31,11 @@ const userSchema = new Schema({
   },
   fullname: {
     type: String,
+    trim: true,
   },
   phone: {
     type: String,
+    trim: true,
   },
   created_at: {
     type: Date,
@@ -47,4 +43,4 @@ const userSchema = new Schema({
   },
 });
 
-module.exports = mongoose.models.user || mongoose.model("User", userSchema);
+module.exports = mongoose.models.User || mongoose.model("User", userSchema);

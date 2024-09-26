@@ -14,25 +14,21 @@ const getAllUsersService = async () => {
 // @Post
 const createUserService = async (userData) => {
   try {
-    // Kiểm tra người dùng có tồn tại hay không
-    const existingUser = await userModel.findOne({ email: userData.email }).exec(); // Sửa key thành email
-
+    const existingUser = await userModel.findOne({ email: userData.email }).exec();
+    
     if (existingUser) {
       return { success: false, message: 'User already exists!' };
     }
 
-    // Kiểm tra mật khẩu hợp lệ
     if (!userData.password || userData.password.length < 6) {
       throw new Error('Password must be at least 6 characters long');
     }
 
-    // Băm mật khẩu
     const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-    // Tạo người dùng mới
     const newUser = new userModel({ ...userData, password: hashedPassword });
-
-    // Tạo access token cho người dùng
+    await newUser.save()
+    
     const accessToken = jwt.sign(
       { userId: newUser._id, role: newUser.role },
       process.env.ACCESS_TOKEN_SECRET,
