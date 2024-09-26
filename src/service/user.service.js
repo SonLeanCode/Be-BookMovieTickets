@@ -2,16 +2,15 @@ const userModel = require('../models/UserModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { EXPIRES_TIME } = require('../constants/expiresTimeConstants');
-// @Get
+
 const getAllUsersService = async () => {
   try {
-    return await userModel.find().exec(); // Sử dụng exec để tối ưu
+    return await userModel.find().exec();
   } catch (error) {
     throw new Error('Unable to fetch users');
   }
 };
 
-// @Post
 const createUserService = async (userData) => {
   try {
     const existingUser = await userModel.findOne({ email: userData.email }).exec();
@@ -27,15 +26,9 @@ const createUserService = async (userData) => {
     const hashedPassword = await bcrypt.hash(userData.password, 10);
 
     const newUser = new userModel({ ...userData, password: hashedPassword });
-    await newUser.save()
+    await newUser.save();
     
-    const accessToken = jwt.sign(
-      { userId: newUser._id, role: newUser.role },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: EXPIRES_TIME.USER }
-    );
-
-    return { success: true, newUser, accessToken };
+    return { success: true, newUser };
   } catch (error) {
     console.error('Error in service:', error);
     throw new Error('Unable to create user');
