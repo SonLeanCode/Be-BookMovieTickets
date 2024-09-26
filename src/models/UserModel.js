@@ -20,7 +20,7 @@ const userSchema = new Schema({
   },
   role: {
     type: Number,
-    default: 2,
+    default: 1,
   },
   setting: {
     language: {

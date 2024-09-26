@@ -1,7 +1,6 @@
 const ROLE = {
     ADMIN:0,
-    MANAGER:1,
-    MEMBER:2,
+    USER:1,
 
 }
 module.exports = ROLE
