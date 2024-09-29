@@ -26,7 +26,9 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
 
 const corsOptions = {
-  origin: process.env.CORS_OPTIONS
+  origin: process.env.CORS_OPTIONS,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức cho phép
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 app.use(cors(corsOptions));
 

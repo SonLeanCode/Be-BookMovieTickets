@@ -3,8 +3,6 @@ const movieSticketsModel = require('../models/MovieSticketsModel')
 
 //@Get service
 const getAllMovieService = async ({ nameMovie, actor, producer }) => {
-    console.log('Search Query:', { nameMovie, actor, producer });
-
     let query = {};
     try {
         if (nameMovie && nameMovie.trim() !== '') {
@@ -20,8 +18,6 @@ const getAllMovieService = async ({ nameMovie, actor, producer }) => {
         // Tìm kiếm phim theo query
         const movies = await movieSticketsModel.find(query);
 
-        // Kiểm tra kết quả
-        console.log('Movies found:', movies);
         return movies;
     } catch (error) {
         console.error('Error in Service', error);
@@ -82,7 +78,7 @@ const patchMovieService = async (_id, data) => {
     }
     try {
         const updateID = await movieSticketsModel.findByIdAndUpdate(_id, {
-            // check bằng undefined để kiểm tra  dữ liệu trước kì  cập nhật  k  xác định hoạc undefined thì  nó sẽ đặt thành là null
+            // check bằng undefined để kiểm tra  dữ liệu trước khi  cập nhật  k  xác định hoạc undefined thì  nó sẽ đặt thành là null
             // làm mất dữ liệu trong trường    => nói chung check undefind để tránh  dữ liệu là null 
             image: data.image !== undefined ? data.image : undefined,
             nameMovie: data.nameMovie !== undefined ? data.nameMovie : undefined,

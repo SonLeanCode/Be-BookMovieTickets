@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;  // Cần lấy `Schema` từ `mongoose`
-
+const ObjectId = Schema.ObjectId;
 const movieSticketSchema = new Schema({
+    id:{type:ObjectId},
     image: {
         type: String,
         // Có thể thêm điều kiện bắt buộc
