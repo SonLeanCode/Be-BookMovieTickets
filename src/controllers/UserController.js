@@ -1,4 +1,3 @@
-
 const userService = require('../service/user.service')
 const googleAuthService = require('../service/user.service')
 /**
@@ -50,7 +49,32 @@ const createUser = async (req, res) => {
             return res.status(400).json({ success: false, message });
         }
 
+        // Phản hồi lại kết quả thành công
         return res.status(200).json({ success: true, message: 'User created successfully', newUser, accessToken });
+    } catch (error) {
+        // Phản hồi lỗi máy chủ nếu có lỗi xảy ra
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
+const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    // Kiểm tra nếu thiếu email hoặc mật khẩu
+    if (!email || !password) {
+        return res.status(400).json({ success: false, message: 'Missing email or password' });
+    }
+
+    try {
+        // Gọi service để xử lý đăng nhập
+        const { success, message, accessToken, user } = await userService.loginUserService(email, password);
+
+        if (!success) {
+            return res.status(400).json({ success: false, message });
+        }
+
+        return res.status(200).json({ success: true, message: 'Login successful', accessToken, user });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
@@ -68,7 +92,7 @@ const delUser = async (req, res) => {
         }
         const dataDelUser = await userService.delUserService(id);
         if (!dataDelUser) {
-            return res.status(400).json({ success: false, message:'Unable to get data' });
+            return res.status(400).json({ success: false, message: 'Unable to get data' });
         }
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
