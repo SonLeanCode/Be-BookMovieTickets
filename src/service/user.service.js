@@ -1,5 +1,6 @@
 const userModel = require('../models/UserModel');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { EXPIRES_TIME } = require('../constants/expiresTimeConstants')
 const { OAuth2Client } = require('google-auth-library');
 
@@ -111,5 +112,6 @@ const loginUserService = async (email, password) => {
 
   module.exports = {
     getAllUsersService,
-    createUserService
+    createUserService,
+    loginUserService
   }
