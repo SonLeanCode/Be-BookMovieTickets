@@ -1,6 +1,7 @@
 const userModel = require('../models/UserModel');
 const bcrypt = require('bcrypt');
 const { EXPIRES_TIME } = require('../constants/expiresTimeConstants')
+const { OAuth2Client } = require('google-auth-library');
 
 const getAllUsersService = async () => {
     try {
@@ -11,11 +12,11 @@ const getAllUsersService = async () => {
   };
 //   @Post 
 const createUserService = async (userData) => {
+   console.log(userData);
+   
   try {
-    // Kiểm tra người dùng có tồn tại hay không
-    const existingUser = await userModel.findOne({ useremail: userData.useremail }).exec();
+    const existingUser = await userModel.findOne({ email: userData.email }).exec();
     console.log(existingUser);
-    
     
     if (existingUser) {
       return { success: false, message: 'User already exists!' };

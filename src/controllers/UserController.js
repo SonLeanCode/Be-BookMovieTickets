@@ -35,10 +35,10 @@ const getUserId = async (req, res) => {
  * @Post
  */
 const createUser = async (req, res) => {
-    const { useremail, password, role, lastname, firstname } = req.body;
-    console.log(useremail, password);
+    const { email, password,fullname } = req.body;
+    console.log(email, password,fullname);
 
-    if (!useremail || !password || !role || !lastname || !firstname) {
+    if (!email || !password || !fullname) { 
         return res.status(400).json({ message: 'Missing required fields' });
     }
 
@@ -126,4 +126,4 @@ const googleLogin = async (req, res) => {
 };
 
 
-module.exports = { getAllUsers, createUser, logOut, getUserId, googleLogin }
+module.exports = { getAllUsers, createUser, logOut, getUserId, googleLogin ,delUser,loginUser}
