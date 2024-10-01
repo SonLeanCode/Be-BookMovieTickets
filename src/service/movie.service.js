@@ -1,5 +1,4 @@
-const MovieSticketsModel = require('../models/MovieSticketsModel')
-const movieSticketsModel = require('../models/MovieSticketsModel')
+const movieModel = require('../models/MovieModel')
 
 //@Get service
 const getAllMovieService = async ({ nameMovie, actor, producer }) => {
@@ -16,7 +15,7 @@ const getAllMovieService = async ({ nameMovie, actor, producer }) => {
         }
 
         // Tìm kiếm phim theo query
-        const movies = await movieSticketsModel.find(query);
+        const movies = await movieModel.find(query);
 
         return movies;
     } catch (error) {
@@ -30,7 +29,7 @@ const getAllMovieService = async ({ nameMovie, actor, producer }) => {
 //@Get:id
 const getIdMovieService = async (_id) => {
     try {
-        const getIdMove = await movieSticketsModel.findOne({ _id })
+        const getIdMove = await movieModel.findOne({ _id })
         if (!getIdMove) {
             console.error('Id not found in model', error)
         }
@@ -47,7 +46,7 @@ const postMovieService = async (data) => {
         throw new Error('Invalid data');
     }
     try {
-        const module = new movieSticketsModel({
+        const module = new movieModel({
             image: data.image,
             nameMovie: data.nameMovie,
             description: data.description,
@@ -77,7 +76,7 @@ const patchMovieService = async (_id, data) => {
         throw new Error('Not found id')
     }
     try {
-        const updateID = await movieSticketsModel.findByIdAndUpdate(_id, {
+        const updateID = await movieModel.findByIdAndUpdate(_id, {
             // check bằng undefined để kiểm tra  dữ liệu trước khi  cập nhật  k  xác định hoạc undefined thì  nó sẽ đặt thành là null
             // làm mất dữ liệu trong trường    => nói chung check undefind để tránh  dữ liệu là null 
             image: data.image !== undefined ? data.image : undefined,
@@ -105,7 +104,7 @@ const deleteMovieService = async (_id) => {
         throw new Error('Movie ID is required');
     }
     try {
-        const delMovie = await MovieSticketsModel.findByIdAndDelete(_id)
+        const delMovie = await movieModel.findByIdAndDelete(_id)
         if (!delMovie) {
             throw new Error('Movie not found');
         }

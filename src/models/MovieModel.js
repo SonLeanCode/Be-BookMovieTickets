@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;  // Cần lấy `Schema` từ `mongoose`
 const ObjectId = Schema.ObjectId;
-const movieSticketSchema = new Schema({
+const movie = new Schema({
     id:{type:ObjectId},
     image: {
         type: String,
@@ -40,4 +40,4 @@ const movieSticketSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('movie_sticket', movieSticketSchema);
+module.exports = mongoose.model('movie', movie);

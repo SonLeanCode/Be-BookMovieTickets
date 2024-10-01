@@ -1,8 +1,8 @@
-const { getAllMovieService } = require('../service/movieStickets.service')
-const { getIdMovieService } = require('../service/movieStickets.service')
-const { postMovieService } = require('../service/movieStickets.service')
-const { patchMovieService } = require('../service/movieStickets.service')
-const { deleteMovieService } = require('../service/movieStickets.service')
+const { getAllMovieService } = require('../service/movie.service')
+const { getIdMovieService } = require('../service/movie.service')
+const { postMovieService } = require('../service/movie.service')
+const { patchMovieService } = require('../service/movie.service')
+const { deleteMovieService } = require('../service/movie.service')
 // @Get  sản phẩm ra trang chủ 
 const getAllMovie = async (req, res) => {
     try {
