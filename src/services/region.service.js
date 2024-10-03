@@ -1,6 +1,5 @@
 const regionModel = require('../models/RegionModel');
 
-// @Get all regions service
 const getAllRegionsService = async () => {
   try {
     const regions = await regionModel.find();
@@ -11,7 +10,6 @@ const getAllRegionsService = async () => {
   }
 };
 
-// @Get region by ID service
 const getRegionByIdService = async (_id) => {
   try {
     const region = await regionModel.findById(_id);
@@ -25,7 +23,6 @@ const getRegionByIdService = async (_id) => {
   }
 };
 
-// @Post create region service
 const createRegionService = async (name) => {
   try {
     const newRegion = new regionModel({ name });
@@ -37,17 +34,17 @@ const createRegionService = async (name) => {
   }
 };
 
-// @Patch update region service
-const updateRegionService = async (_id, name) => {
+const updateRegionService = async (_id, data) => {
+  if (!_id) {
+    throw new Error('Region ID is required');
+  }
+
   try {
     const updatedRegion = await regionModel.findByIdAndUpdate(
       _id,
-      { name, updated_at: Date.now() },
-      { new: true }
+      { ...data, updated_at: Date.now() }, 
+      { new: true } 
     );
-    if (!updatedRegion) {
-      throw new Error('Region not found');
-    }
     return updatedRegion;
   } catch (error) {
     console.error('Error in Service', error);
@@ -55,7 +52,7 @@ const updateRegionService = async (_id, name) => {
   }
 };
 
-// @Delete region service
+
 const deleteRegionService = async (_id) => {
   try {
     const deletedRegion = await regionModel.findByIdAndDelete(_id);

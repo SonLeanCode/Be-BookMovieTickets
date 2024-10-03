@@ -6,7 +6,7 @@ const regionController = require('../controllers/RegionController');
 router.post('/regions', regionController.createRegion);
 router.get('/regions', regionController.getAllRegions);
 router.get('/regions/:id', regionController.getRegionById);
-router.put('/regions/:id', regionController.updateRegion);
+router.patch('/regions/:id', regionController.updateRegion);
 router.delete('/regions/:id', regionController.deleteRegion);
 
 module.exports = router;
