@@ -5,7 +5,7 @@ const {
     removeGenreFromMovieService
 } = require('../services/moviegenre.service');
 
-// @Get: Lấy tất cả thể loại của một phim
+// Lấy tất cả thể loại của một phim
 const getGenresByMovie = async (req, res) => {
     try {
         const { movieId } = req.params;
@@ -25,7 +25,7 @@ const getGenresByMovie = async (req, res) => {
     }
 };
 
-// @Get: Lấy tất cả phim có một thể loại cụ thể
+// Lấy tất cả phim có một thể loại cụ thể
 const getMoviesByGenre = async (req, res) => {
     try {
         const { genreId } = req.params;
@@ -45,7 +45,7 @@ const getMoviesByGenre = async (req, res) => {
     }
 };
 
-// @Post: Thêm thể loại vào phim
+// Thêm thể loại vào phim
 const addGenresToMovie = async (req, res) => {
     try {
         const { movieId } = req.params;
@@ -66,7 +66,7 @@ const addGenresToMovie = async (req, res) => {
     }
 };
 
-// @Delete: Xóa thể loại khỏi phim
+// Xóa thể loại khỏi phim
 const removeGenreFromMovie = async (req, res) => {
     try {
         const { movieId, genreId } = req.params;

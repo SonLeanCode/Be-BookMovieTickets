@@ -4,7 +4,7 @@ const { postGenreService } = require('../services/genre.service');
 const { patchGenreService } = require('../services/genre.service');
 const { deleteGenreService } = require('../services/genre.service');
 
-// @Get all genres
+// Get all genres
 const getAllGenre = async (req, res) => {
     try {
         const { name } = req.query;
@@ -22,7 +22,7 @@ const getAllGenre = async (req, res) => {
     }
 };
 
-// @Get :id 
+// Get :id 
 const getIdGenre = async (req, res) => {
     const { id } = req.params;
     if (!id) {
@@ -39,7 +39,7 @@ const getIdGenre = async (req, res) => {
     }
 };
 
-// @Post 
+// Post 
 const postGenre = async (req, res) => {
     const { name } = req.body;
     const postGenreData = { name };
@@ -58,7 +58,7 @@ const postGenre = async (req, res) => {
     }
 };
 
-// @Patch 
+// Patch 
 const patchGenre = async (req, res) => {
     const { id } = req.params;
     if (!id) {
@@ -74,7 +74,7 @@ const patchGenre = async (req, res) => {
     }
 };
 
-// @Delete 
+// Delete 
 const deleteGenre = async (req, res) => {
     const { id } = req.params;
     if (!id) {
