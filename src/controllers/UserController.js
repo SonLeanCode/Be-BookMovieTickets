@@ -1,5 +1,5 @@
-const userService = require('../service/user.service')
-const googleAuthService = require('../service/user.service')
+const userService = require('../services/user.service')
+const googleAuthService = require('../services/user.service')
 /**
  * @Get
  * @router http://localhost:4003/api/users

@@ -1,98 +1,83 @@
-const { getAllMovieService } = require('../service/movie.service')
-const { getIdMovieService } = require('../service/movie.service')
-const { postMovieService } = require('../service/movie.service')
-const { patchMovieService } = require('../service/movie.service')
-const { deleteMovieService } = require('../service/movie.service')
-// @Get  sản phẩm ra trang chủ 
+const {
+    getAllMovieService,
+    postMovieService,
+    getIdMovieService,
+    patchMovieService,
+    deleteMovieService
+} = require('../services/movie.service');
+
+// @Get all movies
 const getAllMovie = async (req, res) => {
     try {
         const { nameMovie, actor, producer } = req.query;
-        if (!nameMovie && !actor && !producer) {
-            const allMovies = await getAllMovieService({}); 
-            return res.status(200).json({ success: true, message: 'Get all movies successfully', movies: allMovies });
-        }   
-        const movie = await getAllMovieService({ nameMovie, actor, producer });
-        if (!movie || movie.length === 0) {
-            return res.status(400).json({ message: 'Not found get data' });
+        const movies = await getAllMovieService({ nameMovie, actor, producer });
+        if (!movies || movies.length === 0) {
+            return res.status(404).json({ message: 'Movies not found' });
         }
-        return res.status(200).json({ success: true, message: 'Get movie successfully', movie });
+        return res.status(200).json({ success: true, message: 'Movies retrieved successfully', movies });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
 
-//@Get:id 
+//@Get by id
 const getIdMovie = async (req, res) => {
-    const { id } = req.params
-    if (!id) {
-        return res.status(400).json({ message: 'id not found' })
-    }
     try {
-        const idMovie = await getIdMovieService(id)
+        const idMovie = await getIdMovieService(req.params.id);
         if (!idMovie) {
-            res.status(400).json({ message: 'Not found get id data' })
+            return res.status(404).json({ message: 'Movie not found' });
         }
-        res.status(200).json({ success: true, message: 'Get id movie successfully ', idMovie })
+        return res.status(200).json({ success: true, message: 'Movie retrieved successfully', movie: idMovie });
     } catch (error) {
-        res.status(400).json({ message: error.message })
+        res.status(400).json({ message: error.message });
     }
+};
 
-}
-
-//@Post 
+//@Post movie
 const postMovie = async (req, res) => {
-
-    const { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date } = req.body
+    const { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date } = req.body;
     const postMovieData = { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date }
-
-    // check  trường input 
     const missingFields = Object.keys(postMovieData).filter(field => !postMovieData[field]);
 
     if (missingFields.length > 0) {
         return res.status(400).json({ message: `Missing fields: ${missingFields.join(', ')}` });
     }
-    try {
-        const movie = await postMovieService(postMovieData)
-        res.status(200).json({ success: true, message: 'Post movie successfully', movie })
-    } catch (error) {
-        res.status(400).json({ message: error.message })
-    }
-}
-//@Path 
-const patchMovie = async (req, res) => {
-    const { id } = req.params
-    if (!id) {
-        return res.status(400).json({ message: 'not found id patch' })
-    }
-    const { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date } = req.body
-    const patchMovieData = { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date }
-    try {
-        const movieUpdate = await patchMovieService(id, patchMovieData)
-        res.status(200).json({ success: true, message: 'Path movie successfully', movieUpdate })
-    } catch {
-        res.status(400).json({ message: error.message })
-    }
-}
-//@Delete 
-const deleteMovie = async (req, res) => {
-    const { id } = req.params
-    if (!id) {
-        return res.status(400).json({ message: 'not found id del' })
-    }
-    try {
-        await deleteMovieService(id)
-        res.status(200).json({ success: true, message: 'Movie deleted successfully' })
-    } catch (error) {
-        return res.status(400).json({ message: error.message });
-    }
 
-}
+    try {
+        const movie = await postMovieService(req.body);
+        return res.status(201).json({ success: true, message: 'Movie posted successfully', movie });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+//@Patch movie
+const patchMovie = async (req, res) => {
+    try {
+        const updatedMovie = await patchMovieService(req.params.id, req.body);
+        if (!updatedMovie) {
+            return res.status(404).json({ message: 'Movie not found' });
+        }
+        return res.status(200).json({ success: true, message: 'Movie updated successfully', movie: updatedMovie });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+//@Delete movie
+const deleteMovie = async (req, res) => {
+    try {
+        await deleteMovieService(req.params.id);
+        return res.status(200).json({ success: true, message: 'Movie deleted successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getAllMovie,
     postMovie,
     getIdMovie,
     patchMovie,
     deleteMovie
-}
-
-
+};

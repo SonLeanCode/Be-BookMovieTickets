@@ -1,8 +1,8 @@
-const { getAllGenreService } = require('../service/genre.service');
-const { getIdGenreService } = require('../service/genre.service');
-const { postGenreService } = require('../service/genre.service');
-const { patchGenreService } = require('../service/genre.service');
-const { deleteGenreService } = require('../service/genre.service');
+const { getAllGenreService } = require('../services/genre.service');
+const { getIdGenreService } = require('../services/genre.service');
+const { postGenreService } = require('../services/genre.service');
+const { patchGenreService } = require('../services/genre.service');
+const { deleteGenreService } = require('../services/genre.service');
 
 // @Get all genres
 const getAllGenre = async (req, res) => {

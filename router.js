@@ -6,4 +6,6 @@ module.exports =  function(app){
     app.use('/api',require('./src/routes/movie.routes'))
     // genre
     app.use('/api',require('./src/routes/genre.routes'))
+    // region
+    app.use('/api',require('./src/routes/region.routes'))
 }
