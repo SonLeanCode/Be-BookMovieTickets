@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2')
 const { Schema } = mongoose;  // Cần lấy `Schema` từ `mongoose`
 const ObjectId = Schema.ObjectId;
 const movieSticketSchema = new Schema({
@@ -39,5 +40,5 @@ const movieSticketSchema = new Schema({
         type:Date
     }
 });
-
+movieSticketSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('movie_sticket', movieSticketSchema);

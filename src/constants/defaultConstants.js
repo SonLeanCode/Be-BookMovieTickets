@@ -4,5 +4,5 @@ module.exports = {
     TOKEN_TYPE: 'x-access-token',
     TEN_MINUTES: 10 * 60,
     PAGE_DEFAULT: 1,
-    LIMIT_DEFAULT: 12,
+    LIMIT_DEFAULT: 10,
 };

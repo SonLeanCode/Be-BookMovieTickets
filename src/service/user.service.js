@@ -81,7 +81,6 @@ const verifyToken = async (token) => {
     throw new Error('Invalid token');
   }
 }
-
 const loginUserService = async (email, password) => {
   try {
       // Tìm người dùng theo email
@@ -89,20 +88,17 @@ const loginUserService = async (email, password) => {
       if (!user) {
           return { success: false, message: 'User not found' };
       }
-
       // So sánh mật khẩu đã băm với mật khẩu được cung cấp
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
           return { success: false, message: 'Incorrect password' };
       }
-
       // Tạo access token nếu đúng mật khẩu
       const accessToken = jwt.sign(
           { userId: user._id, role: user.role },
           process.env.ACCESS_TOKEN_SECRET,
           { expiresIn: EXPIRES_TIME.USER }
       );
-
       return { success: true, accessToken, user };
   } catch (error) {
       console.error('Error in login service:', error);

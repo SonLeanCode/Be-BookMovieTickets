@@ -1,3 +1,4 @@
+
 const { getAllMovieService } = require('../service/movieStickets.service')
 const { getIdMovieService } = require('../service/movieStickets.service')
 const { postMovieService } = require('../service/movieStickets.service')
@@ -6,16 +7,18 @@ const { deleteMovieService } = require('../service/movieStickets.service')
 // @Get  sản phẩm ra trang chủ 
 const getAllMovie = async (req, res) => {
     try {
+        // search like
         const { nameMovie, actor, producer } = req.query;
-        if (!nameMovie && !actor && !producer) {
-            const allMovies = await getAllMovieService({}); 
-            return res.status(200).json({ success: true, message: 'Get all movies successfully', movies: allMovies });
-        }   
-        const movie = await getAllMovieService({ nameMovie, actor, producer });
-        if (!movie || movie.length === 0) {
+        //  nameMovie, actor, producer search like ||  còn req dùng để  panigate
+        const movie = await getAllMovieService({ nameMovie, actor, producer }, req);
+        if (!movie || movie.items.length === 0) {
             return res.status(400).json({ message: 'Not found get data' });
         }
-        return res.status(200).json({ success: true, message: 'Get movie successfully', movie });
+        return res.status(200).json({ 
+            success: true, 
+            message: 'Get movie successfully', 
+            movie 
+        });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

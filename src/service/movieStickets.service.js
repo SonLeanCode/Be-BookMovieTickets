@@ -1,10 +1,17 @@
 const MovieSticketsModel = require('../models/MovieSticketsModel')
 const movieSticketsModel = require('../models/MovieSticketsModel')
-
+const PAGINATION = require('../constants/panigateConstants')
 //@Get service
-const getAllMovieService = async ({ nameMovie, actor, producer }) => {
-    let query = {};
+const getAllMovieService = async ({ nameMovie, actor, producer },req) => {
+    let query = {}; //search
+    
     try {
+        // panigate
+        const options = PAGINATION.options(req,{
+            sort: { createdAt: -1 }
+           })  
+           const querys = PAGINATION.query(req,query);
+        // search like
         if (nameMovie && nameMovie.trim() !== '') {
             query.nameMovie = { $regex: '.*' + nameMovie + '.*', $options: 'i' };
         }
@@ -16,7 +23,7 @@ const getAllMovieService = async ({ nameMovie, actor, producer }) => {
         }
 
         // Tìm kiếm phim theo query
-        const movies = await movieSticketsModel.find(query);
+        const movies = await movieSticketsModel.paginate(querys,options);
 
         return movies;
     } catch (error) {
