@@ -6,9 +6,11 @@ const movie = new Schema({
     id:{type:ObjectId},
     image: {
         type: String,
+        require:true
     },
     nameMovie: {
         type: String,
+        require:true
 
     },
     description: {
@@ -19,21 +21,26 @@ const movie = new Schema({
     },
     price: {
         type: String,
+        require:true
     },
     actor: {
         type: String,
+        require:true
     },
     producer: {
         type: String,
+        require:true
     },
     rating: {
-        type: Number
+        type: Number,
+        require:true
     },
     duration:{
         type:Number
     },
     title:{
-        type:String
+        type:String,
+        require:true
     },
     release_date:{
         type:Date
