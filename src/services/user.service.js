@@ -21,7 +21,7 @@ const createUserService = async (userData) => {
     
     if (existingUser) {
       return { success: false, message: 'User already exists!' };
-    }
+    } 
 
     if (!userData.password || userData.password.length < 6) {
       throw new Error('Password must be at least 6 characters long');
