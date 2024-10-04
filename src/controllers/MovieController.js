@@ -10,7 +10,7 @@ const {
 const getAllMovie = async (req, res) => {
     try {
         const { nameMovie, actor, producer } = req.query;
-        const movies = await getAllMovieService({ nameMovie, actor, producer });
+        const movies = await getAllMovieService({ nameMovie, actor, producer },req);
         if (!movies || movies.length === 0) {
             return res.status(404).json({ message: 'Movies not found' });
         }
