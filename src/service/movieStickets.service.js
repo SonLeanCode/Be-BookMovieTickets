@@ -1,5 +1,4 @@
-const MovieSticketsModel = require('../models/MovieSticketsModel')
-const movieSticketsModel = require('../models/MovieSticketsModel')
+const MovieSticketsModel = require('../models/MovieModel')
 const PAGINATION = require('../constants/panigateConstants')
 //@Get service
 const getAllMovieService = async ({ nameMovie, actor, producer },req) => {

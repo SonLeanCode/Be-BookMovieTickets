@@ -30,7 +30,7 @@ const getIdMovie = async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'id not found' })
     }
-    try {
+    try {   
         const idMovie = await getIdMovieService(id)
         if (!idMovie) {
             res.status(400).json({ message: 'Not found get id data' })

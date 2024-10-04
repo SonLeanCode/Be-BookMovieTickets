@@ -6,7 +6,6 @@ const movie = new Schema({
     id:{type:ObjectId},
     image: {
         type: String,
-        // Có thể thêm điều kiện bắt buộc
     },
     nameMovie: {
         type: String,
@@ -40,10 +39,5 @@ const movie = new Schema({
         type:Date
     }
 });
-<<<<<<< HEAD:src/models/MovieSticketsModel.js
-movieSticketSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model('movie_sticket', movieSticketSchema);
-=======
-
-module.exports = mongoose.model('movie', movie);
->>>>>>> dd9e8cc157128581512e9b2b7b875592b6bf3d74:src/models/MovieModel.js
+movie.plugin(mongoosePaginate);
+module.exports = mongoose.model('movie_sticket', movie);
