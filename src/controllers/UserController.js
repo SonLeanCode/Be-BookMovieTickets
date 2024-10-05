@@ -1,129 +1,140 @@
-const userService = require('../services/user.service')
-const googleAuthService = require('../services/user.service')
+const userService = require('../services/user.service');
+
 /**
  * @Get
- * @router http://localhost:4003/api/users
+ * @route GET /api/users
  */
 const getAllUsers = async (req, res) => {
-    try {
-        const user = await userService.getAllUsersService()
-        res.status(200).json(user)
-    } catch (error) {
-        res.status(400).json({ message: error.message })
-    }
+  try {
+    const users = await userService.getAllUsersService();
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Unable to fetch users', error: error.message });
+  }
 };
+
 /**
- * @Get :/id
+ * @Get :id
+ * @route GET /api/users/:id
  */
 const getUserId = async (req, res) => {
-    const { id } = req.params
-    if (!id) {
-        res.status(400).json({ success: false, message: 'id not found' })
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ success: false, message: 'User ID is required' });
+  }
+
+  try {
+    const user = await userService.getIdUserService(id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
-    try {
-        const dataGetUserId = await userService.getIdUserService(id)
-        if (!dataGetUserId) {
-            res.status(400).json({ success: true, message: 'id data service not found !' })
-        }
-        res.status(200).json({ success: true, message: 'get ID user successfully !', dataGetUserId })
-    } catch (error) {
-        res.status(400).json({ success: false, message: error.message })
-    }
-}
+
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching user', error: error.message });
+  }
+};
 
 /**
  * @Post
+ * @route POST /api/users
  */
 const createUser = async (req, res) => {
-    const { email, password,fullname } = req.body;
-    console.log(email, password,fullname);
+  const { email, password, fullname, phone } = req.body;
 
-    if (!email || !password || !fullname) { 
-        return res.status(400).json({ message: 'Missing required fields' });
+  if (!email || !password || !fullname || !phone) {
+    return res.status(400).json({ success: false, message: 'Missing required fields' });
+  }
+
+  try {
+    const { success, message, newUser, accessToken } = await userService.createUserService(req.body);
+
+    if (!success) {
+      return res.status(400).json({ success: false, message });
     }
 
-    try {
-        const { success, message, newUser, accessToken } = await userService.createUserService(req.body);
-
-        if (!success) {
-            return res.status(400).json({ success: false, message });
-        }
-
-        // Phản hồi lại kết quả thành công
-        return res.status(200).json({ success: true, message: 'User created successfully', newUser, accessToken });
-    } catch (error) {
-        // Phản hồi lỗi máy chủ nếu có lỗi xảy ra
-        return res.status(500).json({ success: false, message: error.message });
-    }
+    res.status(201).json({ success: true, message: 'User created successfully', newUser, accessToken });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error creating user', error: error.message });
+  }
 };
 
-
-const loginUser = async (req, res) => {
-    const { email, password } = req.body;
-
-    // Kiểm tra nếu thiếu email hoặc mật khẩu
-    if (!email || !password) {
-        return res.status(400).json({ success: false, message: 'Missing email or password' });
-    }
-
-    try {
-        // Gọi service để xử lý đăng nhập
-        const { success, message, accessToken, user } = await userService.loginUserService(email, password);
-
-        if (!success) {
-            return res.status(400).json({ success: false, message });
-        }
-
-        return res.status(200).json({ success: true, message: 'Login successful', accessToken, user });
-    } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
-    }
-};
 /**
- * @delete 
+ * @Post Login
+ * @route POST /api/users/login
+ */
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: 'Email and password are required' });
+  }
+
+  try {
+    const { success, message, accessToken, user } = await userService.loginUserService(email, password);
+
+    if (!success) {
+      return res.status(400).json({ success: false, message });
+    }
+
+    res.status(200).json({ success: true, message: 'Login successful', accessToken, user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error logging in', error: error.message });
+  }
+};
+
+/**
+ * @Delete :id
+ * @route DELETE /api/users/:id
  */
 const delUser = async (req, res) => {
-    const { id } = req.params;
-    try {
+  const { id } = req.params;
 
+  if (!id) {
+    return res.status(400).json({ success: false, message: 'User ID is required' });
+  }
 
-        if (!id) {
-            res.status(400).json({ success: false, message: ' get  not id params' })
-        }
-        const dataDelUser = await userService.delUserService(id);
-        if (!dataDelUser) {
-            return res.status(400).json({ success: false, message: 'Unable to get data' });
-        }
-    } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+  try {
+    const deletedUser = await userService.delUserService(id);
+
+    if (!deletedUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-}
-/**
- * @Logout
- */
-const logOut = async (req, res) => {
-    try {
-        await userService.logOutUserService(req.user.id)
-        res.status(200).json({ success: true, message: 'Logout sucessfully !' })
-    } catch (error) {
-        res.status(400).json({ success: false, message: error.message })
-    }
-}
-/**
- * Create user and login with google api
- * @route POST /google  ||  http://localhost:4003/api/users/google
- */
-const googleLogin = async (req, res) => {
-    const { token } = req.body;
-    try {
-        const email = await googleAuthService.verifyToken(token);
-        // Tiếp tục xử lý thông tin user sau khi đăng nhập thành công
-        res.status(200).json({ email: email });
-    } catch (error) {
-        res.status(401).json({ error: error.message });
-    }
+    res.status(200).json({ success: true, message: 'User deleted successfully', deletedUser });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error deleting user', error: error.message });
+  }
 };
 
+/**
+ * @Post Logout
+ * @route POST /api/users/logout
+ */
+const logOut = async (req, res) => {
+  try {
+    await userService.logOutUserService(req.user.id); // Assuming req.user contains authenticated user info
+    res.status(200).json({ success: true, message: 'Logout successful' });
+  } catch (error) {
+    res.status(400).json({ success: false, message: 'Error logging out', error: error.message });
+  }
+};
 
-module.exports = { getAllUsers, createUser, logOut, getUserId, googleLogin ,delUser,loginUser}
+/**
+ * @Post Google Login
+ * @route POST /api/users/google
+ */
+const googleLogin = async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const email = await googleAuthService.verifyToken(token);
+    res.status(200).json({ success: true, email });
+  } catch (error) {
+    res.status(401).json({ success: false, message: 'Invalid Google token', error: error.message });
+  }
+};
+
+module.exports = { getAllUsers, createUser, getUserId, loginUser, delUser, logOut, googleLogin };
