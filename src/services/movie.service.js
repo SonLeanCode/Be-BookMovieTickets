@@ -1,20 +1,29 @@
-const movieModel = require('../models/MovieModel');
-
+const MovieSticketsModel = require('../models/MovieModel')
+const PAGINATION = require('../constants/panigateConstants')
 //@Get service
-const getAllMovieService = async ({ nameMovie, actor, producer }) => {
-    let query = {};
+const getAllMovieService = async ({ nameMovie, actor, producer },req) => {
+    let query = {}; //search
+    
     try {
-        if (nameMovie?.trim()) {
+        // panigate
+        const options = PAGINATION.options(req,{
+            sort: { createdAt: -1 }
+           })  
+           const querys = PAGINATION.query(req,query);
+        // search like
+        if (nameMovie && nameMovie.trim() !== '') {
             query.nameMovie = { $regex: '.*' + nameMovie + '.*', $options: 'i' };
         }
-        if (actor?.trim()) {
+        if (actor && actor.trim() !== '') {
             query.actor = { $regex: '.*' + actor + '.*', $options: 'i' };
         }
-        if (producer?.trim()) {
-            query.producer = { $regex: '.*' + producer + '.*', $options: 'i' };
+        if (producer && producer.trim() !== '') {
+            query.producer = { $regex:'.*'+ producer + '.*', $options: 'i' };
         }
 
-        const movies = await movieModel.find(query);
+        // Tìm kiếm phim theo query
+        const movies = await MovieSticketsModel.paginate(querys,options);
+
         return movies;
     } catch (error) {
         console.error('Error in Service', error);
@@ -22,23 +31,29 @@ const getAllMovieService = async ({ nameMovie, actor, producer }) => {
     }
 };
 
+
+
 //@Get:id
 const getIdMovieService = async (_id) => {
     try {
-        const getIdMovie = await movieModel.findById(_id);
-        return getIdMovie;
+        const getIdMove = await movieSticketsModel.findOne({ _id })
+        if (!getIdMove) {
+            console.error('Id not found in model', error)
+        }
+        return getIdMove
     } catch (error) {
-        throw new Error('Unable to get movie by ID');
+        throw new Error('Unable to get id movie')
     }
-};
 
+}
 //@Post service
 const postMovieService = async (data) => {
+
     if (!data) {
         throw new Error('Invalid data');
     }
     try {
-        const newMovie = new movieModel({
+        const module = new movieSticketsModel({
             image: data.image,
             nameMovie: data.nameMovie,
             description: data.description,
@@ -50,64 +65,66 @@ const postMovieService = async (data) => {
             duration: data.duration,
             title: data.title,
             release_date: data.release_date
-        });
-        const savedMovie = await newMovie.save();
-        return savedMovie;
-    } catch (error) {
-        console.error('Error in Service', error);
-        throw new Error('Unable to post movie');
-    }
-};
+        })
+        const dataMovie = await module.save();
 
-//@Patch service
+
+        return dataMovie
+    } catch (error) {
+        console.error('Error in Sevice', error)
+        throw new Error('Unble to post movie')
+    }
+}
+//@Patch 
 const patchMovieService = async (_id, data) => {
+    console.log(_id, data);
+
     if (!_id) {
-        throw new Error('Movie ID is required');
+        throw new Error('Not found id')
     }
     try {
-        const updatedMovie = await movieModel.findByIdAndUpdate(
-            _id,
-            {
-                image: data.image ?? undefined,
-                nameMovie: data.nameMovie ?? undefined,
-                description: data.description ?? undefined,
-                director: data.director ?? undefined,
-                price: data.price ?? undefined,
-                actor: data.actor ?? undefined,
-                producer: data.producer ?? undefined,
-                rating: data.rating ?? undefined,
-                duration: data.duration ?? undefined,
-                title: data.title ?? undefined,
-                release_date: data.release_date ?? undefined
-            },
-            { new: true }
-        );
+        const updateID = await movieSticketsModel.findByIdAndUpdate(_id, {
+            // check bằng undefined để kiểm tra  dữ liệu trước khi  cập nhật  k  xác định hoạc undefined thì  nó sẽ đặt thành là null
+            // làm mất dữ liệu trong trường    => nói chung check undefind để tránh  dữ liệu là null 
+            image: data.image !== undefined ? data.image : undefined,
+            nameMovie: data.nameMovie !== undefined ? data.nameMovie : undefined,
+            description: data.description !== undefined ? data.description : undefined,
+            director: data.director !== undefined ? data.director : undefined,
+            price: data.price !== undefined ? data.price : undefined,
+            actor: data.actor !== undefined ? data.actor : undefined,
+            producer: data.producer !== undefined ? data.producer : undefined,
+            rating: data.rating !== undefined ? data.rating : undefined,
+            duration: data.duration !== undefined ? data.duration : undefined,
+            title: data.title !== undefined ? data.title : undefined,
+            release_date: data.release_date !== undefined ? data.release_date : undefined
+        }, { new: true }) // new :true trả về kết quả dc sau khi cập nhật nên kh cần dùng tới save 
 
-        return updatedMovie;
+        return updateID
     } catch (error) {
         console.error('Error in Service', error);
         throw new Error('Unable to update movie');
     }
-};
-
-//@Delete service
+}
+//@Delete 
 const deleteMovieService = async (_id) => {
+    if (!_id) {
+        throw new Error('Movie ID is required');
+    }
     try {
-        const deletedMovie = await movieModel.findByIdAndDelete(_id);
-        if (!deletedMovie) {
+        const delMovie = await MovieSticketsModel.findByIdAndDelete(_id)
+        if (!delMovie) {
             throw new Error('Movie not found');
         }
-        return deletedMovie;
     } catch (error) {
         console.error('Error in Service', error);
         throw new Error('Unable to delete movie');
     }
-};
-
+}
 module.exports = {
     getAllMovieService,
     postMovieService,
     getIdMovieService,
     patchMovieService,
     deleteMovieService
-};
+
+}

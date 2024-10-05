@@ -6,10 +6,11 @@ const movieSticketSchema = new Schema({
     id:{type:ObjectId},
     image: {
         type: String,
-        // Có thể thêm điều kiện bắt buộc
+        require:true
     },
     nameMovie: {
         type: String,
+        require:true
 
     },
     description: {
@@ -20,26 +21,31 @@ const movieSticketSchema = new Schema({
     },
     price: {
         type: String,
+        require:true
     },
     actor: {
         type: String,
+        require:true
     },
     producer: {
         type: String,
+        require:true
     },
     rating: {
-        type: Number
+        type: Number,
+        require:true
     },
     duration:{
         type:Number
     },
     title:{
-        type:String
+        type:String,
+        require:true
     },
     release_date:{
         type:Date
     }
 });
-
 movieSticketSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('movie_sticket', movieSticketSchema);
+
