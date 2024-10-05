@@ -127,5 +127,4 @@ module.exports = {
     getIdMovieService,
     patchMovieService,
     deleteMovieService
-
 }
