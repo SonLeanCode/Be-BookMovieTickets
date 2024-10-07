@@ -42,8 +42,8 @@ const getUserId = async (req, res) => {
  * @route POST /api/users
  */
 const createUser = async (req, res) => {
-  const { email, password, fullname, phone } = req.body;
-  if (!email || !password || !fullname || !phone) {
+  const { email, password, fullname, phone,confirmPassword } = req.body;
+  if (!email || !password || !fullname || !phone || !confirmPassword) {
     return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
 

@@ -18,13 +18,17 @@ const getIdUserService = async (id) => {
 // Service to create a new user
 const createUserService = async (userData) => {
   
-  const { email, password, fullname, phone } = userData;
+  const { email, password, fullname, phone ,confirmPassword } = userData;
 
   // Check if user already exists
   const existingUser = await User.findOne({ email });
+  if(password !==confirmPassword){
+    return { success: false, message: 'Passwords do not match' };
+  }
   if (existingUser) {
     return { success: false, message: 'Email is already registered' };
   }
+
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
