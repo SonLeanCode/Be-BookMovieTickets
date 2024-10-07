@@ -8,6 +8,7 @@ const TokenBlacklist = require('../models/TokenBlacklist');
 const verifyToken = async (req, res, next) => {
     const authHeader = req.header(DEFAULT.TOKEN_TYPE);
     const token = authHeader && authHeader.split(' ')[1];
+    
 
     // Nếu không có token
     if (!token) {
@@ -29,6 +30,8 @@ const verifyToken = async (req, res, next) => {
 
         // Giải mã token và lấy thông tin người dùng
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        console.log(decoded);
+        
         const user = await UserModel.findById(decoded.userId);
         req.userId = decoded.userId;
         req.role = decoded.role;

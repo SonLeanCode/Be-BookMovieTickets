@@ -43,7 +43,6 @@ const getUserId = async (req, res) => {
  */
 const createUser = async (req, res) => {
   const { email, password, fullname, phone } = req.body;
-
   if (!email || !password || !fullname || !phone) {
     return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
@@ -54,7 +53,8 @@ const createUser = async (req, res) => {
     if (!success) {
       return res.status(400).json({ success: false, message });
     }
-
+   console.log(newUser);
+   
     res.status(201).json({ success: true, message: 'User created successfully', newUser, accessToken });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error creating user', error: error.message });
@@ -78,6 +78,7 @@ const loginUser = async (req, res) => {
     if (!success) {
       return res.status(400).json({ success: false, message });
     }
+    
 
     res.status(200).json({ success: true, message: 'Login successful', accessToken, user });
   } catch (error) {

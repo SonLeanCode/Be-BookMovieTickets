@@ -1,6 +1,8 @@
 const User = require('../models/UserModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {EXPIRES_TIME}  =require('../constants/acccountConstants')
+require('dotenv').config();
 const { ACCESS_TOKEN_SECRET } = process.env; // Ensure you have your secret key in the environment variables
 
 // Service to get all users
@@ -15,6 +17,7 @@ const getIdUserService = async (id) => {
 
 // Service to create a new user
 const createUserService = async (userData) => {
+  
   const { email, password, fullname, phone } = userData;
 
   // Check if user already exists
@@ -39,7 +42,7 @@ const createUserService = async (userData) => {
 
   // Create JWT token for the user
   const accessToken = jwt.sign({ userId: newUser._id, role: newUser.role }, ACCESS_TOKEN_SECRET, {
-    expiresIn: '1d',
+    expiresIn:EXPIRES_TIME,
   });
 
   return { success: true, newUser, accessToken };
