@@ -1,7 +1,8 @@
 const User = require('../models/UserModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { EXPIRES_TIME } = require('../constants/expiresTimeConstants')
+const { EXPIRES_TIME } = require('../constants/expiresTimeConstants');
+const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
 const { ACCESS_TOKEN_SECRET } = process.env; // Ensure you have your secret key in the environment variables
 
@@ -17,9 +18,6 @@ const getIdUserService = async (id) => {
 
 // Service to create a new user
 const createUserService = async (userData) => {
-  console.log(userData);
-
-
   const { fullname, email, phone, password, confirmPassword } = userData;
 
   // Check if user already exists
@@ -80,6 +78,25 @@ const logOutUserService = async (userId) => {
 
   return { success: true };
 };
+// service google
+const googleAuthService = async (token) => {
+  const client = new OAuth2Client(process.env.CLIENT_ID);
+  try {
+    // Xác thực token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.CLIENT_ID, // Xác thực tính hợp lệ của token
+    });
+    const payload = ticket.getPayload();
+    return {
+      email: payload.email,
+            name: payload.name
+    }; // Trả về email của người dùng
+  } catch (error) {
+    throw new Error('Invalid Google token'); // Ném lỗi nếu xác thực không thành công
+  }
+};
+
 
 module.exports = {
   getAllUsersService,
@@ -88,4 +105,5 @@ module.exports = {
   loginUserService,
   delUserService,
   logOutUserService,
+  googleAuthService
 };

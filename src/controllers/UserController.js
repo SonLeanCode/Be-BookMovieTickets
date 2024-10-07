@@ -72,8 +72,8 @@ const createUser = async (req, res) => {
  */
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log( email, password );
-  
+  console.log(email, password);
+
 
   if (!email || !password) {
     return res.status(400).json({ success: false, message: 'Email and password are required' });
@@ -86,8 +86,8 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ success: false, message });
     }
     console.log(accessToken);
-    
-    
+
+
 
     res.status(200).json({ success: true, message: 'Login successful', accessToken, user });
   } catch (error) {
@@ -138,10 +138,9 @@ const logOut = async (req, res) => {
  */
 const googleLogin = async (req, res) => {
   const { token } = req.body;
-
   try {
-    const email = await googleAuthService.verifyToken(token);
-    res.status(200).json({ success: true, email });
+    const email = await userService.googleAuthService(token);
+    res.status(200).json({ success: true, message: 'Login google sucessfully', ...email });
   } catch (error) {
     res.status(401).json({ success: false, message: 'Invalid Google token', error: error.message });
   }
