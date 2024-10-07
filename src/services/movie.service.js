@@ -36,7 +36,7 @@ const getAllMovieService = async ({ nameMovie, actor, producer },req) => {
 //@Get:id
 const getIdMovieService = async (_id) => {
     try {
-        const getIdMove = await movieSticketsModel.findOne({ _id })
+        const getIdMove = await MovieSticketsModel.findOne({ _id })
         if (!getIdMove) {
             console.error('Id not found in model', error)
         }
@@ -53,7 +53,7 @@ const postMovieService = async (data) => {
         throw new Error('Invalid data');
     }
     try {
-        const module = new movieSticketsModel({
+        const module = new MovieSticketsModel({
             image: data.image,
             nameMovie: data.nameMovie,
             description: data.description,
@@ -83,7 +83,7 @@ const patchMovieService = async (_id, data) => {
         throw new Error('Not found id')
     }
     try {
-        const updateID = await movieSticketsModel.findByIdAndUpdate(_id, {
+        const updateID = await MovieSticketsModel.findByIdAndUpdate(_id, {
             // check bằng undefined để kiểm tra  dữ liệu trước khi  cập nhật  k  xác định hoạc undefined thì  nó sẽ đặt thành là null
             // làm mất dữ liệu trong trường    => nói chung check undefind để tránh  dữ liệu là null 
             image: data.image !== undefined ? data.image : undefined,

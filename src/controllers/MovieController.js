@@ -37,14 +37,8 @@ const getIdMovie = async (req, res) => {
 const postMovie = async (req, res) => {
     const { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date } = req.body;
     const postMovieData = { image, nameMovie, description, director, price, actor, producer, rating, duration, title, release_date }
-    const missingFields = Object.keys(postMovieData).filter(field => !postMovieData[field]);
-
-    if (missingFields.length > 0) {
-        return res.status(400).json({ message: `Missing fields: ${missingFields.join(', ')}` });
-    }
-
     try {
-        const movie = await postMovieService(req.body);
+        const movie = await postMovieService(postMovieData);
         return res.status(201).json({ success: true, message: 'Movie posted successfully', movie });
     } catch (error) {
         res.status(400).json({ message: error.message });
