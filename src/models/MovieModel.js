@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2')
 const { Schema } = mongoose;  // Cần lấy `Schema` từ `mongoose`
 const ObjectId = Schema.ObjectId;
-const movie = new Schema({
+const movieSticketSchema = new Schema({
     id:{type:ObjectId},
     image: {
         type: String,
@@ -46,5 +46,6 @@ const movie = new Schema({
         type:Date
     }
 });
-movie.plugin(mongoosePaginate);
-module.exports = mongoose.model('movie_sticket', movie);
+movieSticketSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model('movie_sticket', movieSticketSchema);
+

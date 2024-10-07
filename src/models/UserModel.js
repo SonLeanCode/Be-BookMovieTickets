@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const validators = require("validator");
+const ROLE = require("../constants/acccountConstants");
 
 const userSchema = new Schema({
   email: {
@@ -19,8 +20,10 @@ const userSchema = new Schema({
     trim: true,
   },
   role: {
-    type: Number,
-    default: 1,
+    type: String,
+    enum: [ROLE.ADMIN, ROLE.USER],
+    default: ROLE.USER,
+    required: true,
   },
   setting: {
     language: {
@@ -32,19 +35,30 @@ const userSchema = new Schema({
   fullname: {
     type: String,
     trim: true,
+    required: [true, "Full name is required"],
   },
   phone: {
     type: String,
     trim: true,
+    required: [true, "Phone number is required"],
+    validate: {
+      validator: validators.isMobilePhone,
+      message: "Please enter a valid phone number",
+    },
   },
   created_at: {
     type: Date,
     default: Date.now,
   },
-  update_at: {
+  updated_at: {
     type: Date,
     default: Date.now,
   },
+});
+
+userSchema.pre("save", function (next) {
+  this.updated_at = Date.now();
+  next();
 });
 
 module.exports = mongoose.models.User || mongoose.model("user", userSchema);
