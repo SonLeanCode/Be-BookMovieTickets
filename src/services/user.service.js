@@ -1,7 +1,7 @@
 const User = require('../models/UserModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const {EXPIRES_TIME}  =require('../constants/acccountConstants')
+const { EXPIRES_TIME } = require('../constants/expiresTimeConstants')
 require('dotenv').config();
 const { ACCESS_TOKEN_SECRET } = process.env; // Ensure you have your secret key in the environment variables
 
@@ -17,12 +17,14 @@ const getIdUserService = async (id) => {
 
 // Service to create a new user
 const createUserService = async (userData) => {
-  
-  const { email, password, fullname, phone ,confirmPassword } = userData;
+  console.log(userData);
+
+
+  const { fullname, email, phone, password, confirmPassword } = userData;
 
   // Check if user already exists
   const existingUser = await User.findOne({ email });
-  if(password !==confirmPassword){
+  if (password !== confirmPassword) {
     return { success: false, message: 'Passwords do not match' };
   }
   if (existingUser) {
@@ -42,13 +44,9 @@ const createUserService = async (userData) => {
     setting: userData.setting || { language: 'en' },
   });
 
+
+
   await newUser.save();
-
-  // Create JWT token for the user
-  const accessToken = jwt.sign({ userId: newUser._id, role: newUser.role }, ACCESS_TOKEN_SECRET, {
-    expiresIn:EXPIRES_TIME,
-  });
-
   return { success: true, newUser, accessToken };
 };
 
@@ -67,9 +65,8 @@ const loginUserService = async (email, password) => {
 
   // Create JWT token for the user
   const accessToken = jwt.sign({ userId: user._id, role: user.role }, ACCESS_TOKEN_SECRET, {
-    expiresIn: '1d',
+    expiresIn: EXPIRES_TIME.ACCOUNT,
   });
-
   return { success: true, accessToken, user };
 };
 
@@ -78,9 +75,9 @@ const delUserService = async (id) => {
   return await User.findByIdAndDelete(id);
 };
 
-// Service to log out a user (you might need to handle token invalidation on the client-side)
+
 const logOutUserService = async (userId) => {
-  // No logic needed for now, unless handling refresh tokens
+
   return { success: true };
 };
 

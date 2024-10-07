@@ -42,21 +42,26 @@ const getUserId = async (req, res) => {
  * @route POST /api/users
  */
 const createUser = async (req, res) => {
-  const { email, password, fullname, phone,confirmPassword } = req.body;
+  const { fullname, email, phone, password, confirmPassword } = req.body;
+
+  // Kiểm tra các trường bắt buộc
   if (!email || !password || !fullname || !phone || !confirmPassword) {
     return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
 
+  const dataRegister = { fullname, email, phone, password, confirmPassword };
+
   try {
-    const { success, message, newUser, accessToken } = await userService.createUserService(req.body);
+    const { success, message, newUser } = await userService.createUserService(dataRegister);
 
     if (!success) {
       return res.status(400).json({ success: false, message });
     }
-   console.log(newUser);
-   
-    res.status(201).json({ success: true, message: 'User created successfully', newUser, accessToken });
+
+    console.log(newUser);
+    res.status(201).json({ success: true, message: 'User created successfully', newUser });
   } catch (error) {
+    console.error(error); // In lỗi để dễ dàng debug
     res.status(500).json({ success: false, message: 'Error creating user', error: error.message });
   }
 };
@@ -67,6 +72,8 @@ const createUser = async (req, res) => {
  */
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log( email, password );
+  
 
   if (!email || !password) {
     return res.status(400).json({ success: false, message: 'Email and password are required' });
@@ -78,6 +85,8 @@ const loginUser = async (req, res) => {
     if (!success) {
       return res.status(400).json({ success: false, message });
     }
+    console.log(accessToken);
+    
     
 
     res.status(200).json({ success: true, message: 'Login successful', accessToken, user });

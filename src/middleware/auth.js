@@ -8,6 +8,7 @@ const TokenBlacklist = require('../models/TokenBlacklist');
 const verifyToken = async (req, res, next) => {
     const authHeader = req.header(DEFAULT.TOKEN_TYPE);
     const token = authHeader && authHeader.split(' ')[1];
+    console.log(token);
     
 
     // Nếu không có token
