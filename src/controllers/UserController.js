@@ -142,4 +142,16 @@ const googleLogin = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, createUser, getUserId, loginUser, delUser, logOut, googleLogin };
+const facebookLogin = async (req, res) => {
+  const { token } = req.body;
+  
+  try {
+    const email = await userService.facebookAuthService(token);
+    
+    res.status(200).json({ success: true, message: 'Login Facebook successfully', ...email });
+  } catch (error) {
+    res.status(401).json({ success: false, message: 'Invalid Facebook token', error: error.message });
+  }
+};
+
+module.exports = { getAllUsers, createUser, getUserId, loginUser, delUser, logOut, googleLogin, facebookLogin };

@@ -3,8 +3,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { EXPIRES_TIME } = require('../constants/expiresTimeConstants');
 const { OAuth2Client } = require('google-auth-library');
+const axios = require('axios');
 require('dotenv').config();
-const { ACCESS_TOKEN_SECRET } = process.env; // Ensure you have your secret key in the environment variables
+const { ACCESS_TOKEN_SECRET } = process.env;
 
 // Service to get all users
 const getAllUsersService = async () => {
@@ -101,7 +102,6 @@ const googleAuthService = async (token) => {
       await user.save();
     }
 
-    // Tạo JWT access token của riêng bạn
     const accessToken = jwt.sign({ userId: user._id, role: user.role }, ACCESS_TOKEN_SECRET, {
       expiresIn: '1h', // Thời gian hết hạn của token
     });
@@ -116,6 +116,40 @@ const googleAuthService = async (token) => {
   }
 };
 
+const facebookAuthService = async (accessToken) => {
+  try {
+    // Gọi API xác thực token Facebook
+    const fbResponse = await axios.get(`https://graph.facebook.com/me?access_token=${accessToken}&fields=id,name,email`);
+    const fbUser = fbResponse.data;
+
+    // Kiểm tra xem email đã tồn tại trong DB chưa
+    let user = await User.findOne({ email: fbUser.email });
+    if (!user) {
+      // Nếu người dùng chưa tồn tại, tạo mới
+      user = new User({
+        email: fbUser.email,
+        fullname: fbUser.name,
+        password: '000000',
+        phone: '0336363180' 
+      });
+      await user.save();
+    }
+
+    // Tạo token JWT cho người dùng
+    const token = jwt.sign({ userId: user._id, role: user.role }, ACCESS_TOKEN_SECRET, {
+      expiresIn: '1h', // Thời gian hết hạn của token
+    });
+
+    return {
+      accessToken: token, // Trả về accessToken cho client
+      user
+    };
+  } catch (error) {
+    console.error('Error verifying Facebook token:', error);
+    throw new Error('Invalid Facebook token');
+  }
+};
+
 
 module.exports = {
   getAllUsersService,
@@ -124,5 +158,6 @@ module.exports = {
   loginUserService,
   delUserService,
   logOutUserService,
-  googleAuthService
+  googleAuthService,
+  facebookAuthService
 };
