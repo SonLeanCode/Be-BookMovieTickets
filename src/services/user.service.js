@@ -82,19 +82,37 @@ const logOutUserService = async (userId) => {
 const googleAuthService = async (token) => {
   const client = new OAuth2Client(process.env.CLIENT_ID);
   try {
-    // Xác thực token
+    // Xác thực token của Google
     const ticket = await client.verifyIdToken({
-      idToken: token, // Xác thực token
-      audience: process.env.CLIENT_ID, //  đảm  bảo cho token  gửi cho ứng dụng nào va dịch  vụ nó dc cấp
+      idToken: token,
+      audience: process.env.CLIENT_ID, // Đảm bảo token được cấp cho ứng dụng của bạn
     });
     const payload = ticket.getPayload();
+    // Kiểm tra xem email đã tồn tại trong DB chưa
+    let user = await User.findOne({ email: payload.email });
+    if (!user) {
+      // Nếu người dùng chưa tồn tại, tạo mới
+      user = new User({
+        email: payload.email,
+        fullname: payload.name,
+        password: '000000',
+        phone: '0336363180'
+      });
+      await user.save();
+    }
+
+    // Tạo JWT access token của riêng bạn
+    const accessToken = jwt.sign({ userId: user._id, role: user.role }, ACCESS_TOKEN_SECRET, {
+      expiresIn: '1h', // Thời gian hết hạn của token
+    });
 
     return {
-      email: payload.email,
-      name: payload.name
-    }; // Trả về email của người dùng
+      accessToken, // Trả về accessToken cho client
+      user
+    };
   } catch (error) {
-    throw new Error('Invalid Google token'); // Ném lỗi nếu xác thực không thành công
+    console.error('Error verifying Google token:', error);
+    throw new Error('Invalid Google token');
   }
 };
 

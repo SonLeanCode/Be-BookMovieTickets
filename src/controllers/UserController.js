@@ -138,8 +138,10 @@ const logOut = async (req, res) => {
  */
 const googleLogin = async (req, res) => {
   const { token } = req.body;
+
   try {
     const email = await userService.googleAuthService(token);
+    
     res.status(200).json({ success: true, message: 'Login google sucessfully', ...email });
   } catch (error) {
     res.status(401).json({ success: false, message: 'Invalid Google token', error: error.message });
