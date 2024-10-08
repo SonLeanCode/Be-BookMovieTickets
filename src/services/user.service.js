@@ -41,11 +41,11 @@ const createUserService = async (userData) => {
     role: userData.role || 'user',
     setting: userData.setting || { language: 'en' },
   });
-
+  
 
 
   await newUser.save();
-  return { success: true, newUser, accessToken };
+  return { success: true, newUser };
 };
 
 // Service to log in a user
