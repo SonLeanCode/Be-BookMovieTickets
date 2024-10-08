@@ -41,7 +41,7 @@ const createUserService = async (userData) => {
     role: userData.role || 'user',
     setting: userData.setting || { language: 'en' },
   });
-  
+
 
 
   await newUser.save();
@@ -88,9 +88,10 @@ const googleAuthService = async (token) => {
       audience: process.env.CLIENT_ID, // Xác thực tính hợp lệ của token
     });
     const payload = ticket.getPayload();
+
     return {
       email: payload.email,
-            name: payload.name
+      name: payload.name
     }; // Trả về email của người dùng
   } catch (error) {
     throw new Error('Invalid Google token'); // Ném lỗi nếu xác thực không thành công

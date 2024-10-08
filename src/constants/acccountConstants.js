@@ -3,4 +3,5 @@ const ROLE = {
     USER: 'user',
 
 }
+
 module.exports = ROLE
