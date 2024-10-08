@@ -43,12 +43,6 @@ const getUserId = async (req, res) => {
  */
 const createUser = async (req, res) => {
   const { fullname, email, phone, password, confirmPassword } = req.body;
-
-  // Kiểm tra các trường bắt buộc
-  if (!email || !password || !fullname || !phone || !confirmPassword) {
-    return res.status(400).json({ success: false, message: 'Missing required fields' });
-  }
-
   const dataRegister = { fullname, email, phone, password, confirmPassword };
 
   try {
