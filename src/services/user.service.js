@@ -45,7 +45,7 @@ const createUserService = async (userData) => {
 
 
   await newUser.save();
-  return { success: true, newUser, accessToken };
+  return { success: true, newUser };
 };
 
 // Service to log in a user
@@ -84,8 +84,8 @@ const googleAuthService = async (token) => {
   try {
     // Xác thực token
     const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.CLIENT_ID, // Xác thực tính hợp lệ của token
+      idToken: token, // Xác thực token
+      audience: process.env.CLIENT_ID, //  đảm  bảo cho token  gửi cho ứng dụng nào va dịch  vụ nó dc cấp
     });
     const payload = ticket.getPayload();
     return {

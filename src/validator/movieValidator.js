@@ -2,28 +2,34 @@ const { check, validationResult } = require('express-validator');
 const validateMovie = [
     check('nameMovie')
         .exists().withMessage('nameMovie is required')
+        .notEmpty().withMessage('nameMovie cannot be empty')
         .isString().withMessage('nameMovie must be a string'),
 
     check('image')
         .exists().withMessage('Image is required')
+        .notEmpty().withMessage('nameMovie cannot be empty')
         .isString().withMessage('Image must be a string'),
 
     check('price')
         .exists().withMessage('Price is required')
+        .notEmpty().withMessage('nameMovie cannot be empty')
         .isString().withMessage('Price must be a string'),
 
     check('actor')
         .exists().withMessage('Actor is required')
+        .notEmpty().withMessage('nameMovie cannot be empty')
         .isString().withMessage('Actor must be a string'),
 
     check('producer')
         .exists().withMessage('Producer is required')
+        .notEmpty().withMessage('nameMovie cannot be empty')
         .isString().withMessage('Producer must be a string'),
 
     check('rating')
         .exists().withMessage('Rating is required'),
     check('title')
         .exists().withMessage('Title is required')
+        .notEmpty().withMessage('nameMovie cannot be empty')
         .isString().withMessage('Title must be a string'),
 
     // Không bắt buộc 

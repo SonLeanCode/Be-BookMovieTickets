@@ -8,7 +8,7 @@ const { deleteMovie } = require('../controllers/MovieController')
 const { movieValidator } = require('../validator')
 router.get('/movie', getAllMovie)
 router.get('/movie/:id', getIdMovie)
-router.post('/movie', postMovie, movieValidator.validateMovie)
+router.post('/movie', movieValidator.validateMovie, postMovie)
 router.patch('/movie/:id', patchMovie)
 router.delete('/movie/:id', deleteMovie)
 
