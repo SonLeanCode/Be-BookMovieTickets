@@ -46,6 +46,7 @@ const userSchema = new Schema({
       message: "Please enter a valid phone number",
     },
   },
+  provider: { type: String, default: "local" }, 
   created_at: {
     type: Date,
     default: Date.now,

@@ -90,20 +90,22 @@ const googleAuthService = async (token) => {
     });
     const payload = ticket.getPayload();
     // Kiểm tra xem email đã tồn tại trong DB chưa
-    let user = await User.findOne({ email: payload.email });
+    let user = await User.findOne({ email: payload.email, provider: 'google' });
+
     if (!user) {
       // Nếu người dùng chưa tồn tại, tạo mới
       user = new User({
         email: payload.email,
         fullname: payload.name,
         password: '000000',
-        phone: '0336363180'
+        phone: '0336363180',
+         provider: 'google'
       });
       await user.save();
     }
 
     const accessToken = jwt.sign({ userId: user._id, role: user.role }, ACCESS_TOKEN_SECRET, {
-      expiresIn: '1h', // Thời gian hết hạn của token
+      expiresIn:EXPIRES_TIME.ACCOUNT, // Thời gian hết hạn của token
     });
 
     return {
@@ -137,7 +139,7 @@ const facebookAuthService = async (accessToken) => {
 
     // Tạo token JWT cho người dùng
     const token = jwt.sign({ userId: user._id, role: user.role }, ACCESS_TOKEN_SECRET, {
-      expiresIn: '1h', // Thời gian hết hạn của token
+      expiresIn: EXPIRES_TIME.ACCOUNT, // Thời gian hết hạn của token
     });
 
     return {
