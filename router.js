@@ -10,4 +10,6 @@ module.exports =  function(app){
     app.use('/api',require('./src/routes/region.routes'))
     //movie_genre
     app.use('/api',require('./src/routes/moviegenre.routes'))
+    //cinema
+    app.use('/api',require('./src/routes/cinema.routes'))
 }

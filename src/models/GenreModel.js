@@ -27,4 +27,4 @@ genreSchema.pre('save', function (next) {
     next();
 });
 
-module.exports = mongoose.models.genre || mongoose.model('genre', genreSchema);
+module.exports = mongoose.models.genre || mongoose.model('genres', genreSchema);

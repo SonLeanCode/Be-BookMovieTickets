@@ -18,4 +18,4 @@ const reviewSchema = new Schema({
         required: true
     }
 })
-module.exports =  mongoose.models.review || mongoose.model('review',reviewSchema)
+module.exports =  mongoose.models.review || mongoose.model('reviews',reviewSchema)

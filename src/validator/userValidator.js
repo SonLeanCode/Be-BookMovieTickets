@@ -8,12 +8,7 @@ const validateUser = [
     check('password')
         .exists().withMessage('password required')
         .notEmpty().withMessage('Password cannot be empty'),
-
-    check('role')
-        .exists().withMessage('Role is required')
-        .notEmpty().withMessage('Role cannot be empty')
-        .isIn(['ADMIN', 'USER']).withMessage('Role must be either ADMIN or USER'),
-
+        
     check('setting.language')
         .optional() // Có thể không bắt buộc
         .isIn(['en', 'vi']).withMessage('Language must be either en or vi'),

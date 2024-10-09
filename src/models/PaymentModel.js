@@ -16,4 +16,4 @@ const paymentSchema = new Schema({
     voucher_id: { type: Schema.Types.ObjectId, ref: 'voucher', require: true },
     ticket_id: { type: Schema.Types.ObjectId, ref:'ticket',require:true }
 })
-module.exports = mongoose.models.payment || mongoose.model('payment',paymentSchema)
+module.exports = mongoose.models.payment || mongoose.model('payments',paymentSchema)

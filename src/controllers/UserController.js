@@ -132,7 +132,6 @@ const logOut = async (req, res) => {
  */
 const googleLogin = async (req, res) => {
   const { token } = req.body;
-
   try {
     const email = await userService.googleAuthService(token);
     
