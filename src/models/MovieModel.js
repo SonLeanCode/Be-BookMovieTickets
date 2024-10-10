@@ -32,6 +32,9 @@ const movieSticketSchema = new Schema({
     },
     release_date:{
         type:Date
+    },
+    hotdeal:{
+        type:String
     }   
 });
 movieSticketSchema.plugin(mongoosePaginate);
