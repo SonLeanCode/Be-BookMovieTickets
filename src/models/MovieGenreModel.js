@@ -28,4 +28,4 @@ movieGenreSchema.pre('save', function (next) {
     next();
 });
 
-module.exports = mongoose.models.movie_genre || mongoose.model('movie_genre', movieGenreSchema);
+module.exports = mongoose.models.movie_genre || mongoose.model('movie_genres', movieGenreSchema);

@@ -8,26 +8,18 @@ const movieSticketSchema = new Schema({
         type: String,
         require:true
     },
-    nameMovie: {
+    name: {
         type: String,
         require:true
-
     },
     description: {
-        type: String,
-    },
-    director: {
         type: String,
     },
     price: {
         type: String,
         require:true
     },
-    actor: {
-        type: String,
-        require:true
-    },
-    producer: {
+    director: {
         type: String,
         require:true
     },
@@ -38,14 +30,10 @@ const movieSticketSchema = new Schema({
     duration:{
         type: String,
     },
-    title:{
-        type:String,
-        require:true
-    },
     release_date:{
         type:Date
-    }
+    }   
 });
 movieSticketSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model('movie_sticket', movieSticketSchema);
+module.exports = mongoose.model('movie_stickets', movieSticketSchema);
 

@@ -20,4 +20,4 @@ schema.plugin(mongooseDelete, {
     overrideMethods: true
 });
 schema.plugin(mongoosePaginate);
-module.exports = mongoose.model('token_manager', schema);
+module.exports = mongoose.model('token_managers', schema);

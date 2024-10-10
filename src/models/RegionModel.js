@@ -22,4 +22,4 @@ regionSchema.pre('save', function (next) {
   next();
 });
 
-module.exports = mongoose.model('Region', regionSchema);
+module.exports = mongoose.model('regions', regionSchema);

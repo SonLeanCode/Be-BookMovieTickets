@@ -99,7 +99,7 @@ const googleAuthService = async (token) => {
         fullname: payload.name,
         password: '000000',
         phone: '0336363180',
-         provider: 'google'
+        provider: 'google'
       });
       await user.save();
     }
