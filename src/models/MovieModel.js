@@ -32,11 +32,11 @@ const movieSticketSchema = new Schema({
         require:true
     },
     rating: {
-        type: Number,
+        type: String,
         require:true
     },
     duration:{
-        type:Number
+        type: String,
     },
     title:{
         type:String,
