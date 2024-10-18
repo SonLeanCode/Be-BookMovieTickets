@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 const ACCOUNT = require('../constants/acccountConstants');
-const UserModel = require('../models/UserModel');
-const TokenModel = require('../models/TokenModel');
+const UserModel = require('../api/models/UserModel');
+const TokenModel = require('../api/models/TokenModel');
 const DEFAULT = require('../constants/defaultConstants');
-const TokenBlacklist = require('../models/TokenBlacklist');
+const TokenBlacklist = require('../api/models/TokenBlacklist');
 
 const verifyToken = async (req, res, next) => {
     const authHeader = req.header(DEFAULT.TOKEN_TYPE);

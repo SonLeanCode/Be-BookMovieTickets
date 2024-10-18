@@ -1,92 +1,46 @@
-var express = require("express");
-const fs = require('fs');
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var router = require('./router');
-const cors = require('cors');
-const createProxyMiddleware = require('http-proxy-middleware');
-
-if (!fs.existsSync('./uploads')) {
-    fs.mkdirSync('./uploads');
-}
-
-var app = express();
-app.set("view engine", "ejs");
-
-const mongoose = require("mongoose");
-
-mongoose.connect("mongodb://localhost:27017/duAn")
-  .then(() => console.log(">>>>>>>>>> DB Connected!!!!!!"))
-  .catch((err) => console.log(">>>>>>>>> DB Error: ", err));
-
+const express = require('express');
+const bodyParser = require('body-parser');
+const router = require('./router');
 require('dotenv').config();
-app.use(session({ secret: 'ssshhhhh', saveUninitialized: true, resave: true }));  
+
+const connectDB = require('./src/config/database/db.config');
+const swaggerConfig = require('./src/config/swagger/swagger');
+const configureCors = require('./src/config/cors/cors.config');
+const configureProxy = require('./src/config/proxy/proxy.config');
+
+const app = express();
+app.set('view engine', 'ejs');
+
+// Kết nối DB
+connectDB();
+
+// Use express
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
 
-const corsOptions = {
-  origin: process.env.CORS_OPTIONS
-};
-app.use(cors(corsOptions));
+// Cấu hình CORS
+configureCors(app);
 
-if (process.env.HTTP_PROXY_MIDDLEWARE) {
-  const options = {
-      target: process.env.HTTP_PROXY_MIDDLEWARE,
-      changeOrigin: true,
-      ws: true,
-      pathRewrite: {
-          '^/': ''
-      }
-  };
-  const httpProxyMiddleware = createProxyMiddleware(options);
-  app.use(httpProxyMiddleware);
-}
+// Cấu hình Proxy
+configureProxy(app);
 
+// Định nghĩa route
 router(app);
 
-app.get('/test-cors', (req, res) => {
-  res.json({ message: 'CORS is working!' });
-});
+// Swagger
+swaggerConfig(app);
 
-const options = {
-  swaggerDefinition: {
-      info: {
-          description: '',
-          title: 'Du An',
-          version: '1.0.0'
-      },
-      host: process.env.HOST + ':' + process.env.PORT,
-      basePath: '/api',
-      produces: [
-          'application/json'
-      ],
-      schemes: ['http', 'https'],
-      securityDefinitions: {
-          JWT: {
-              type: 'apiKey',
-              in: 'header',
-              name: 'x-access-token',
-              description: 'Bearer + access_token'
-          }
-      }
-  },
-  basedir: __dirname,
-  files: ['./app/**/*.js']
-};
-const expressSwagger = require('express-swagger-generator')(app);
-expressSwagger(options);
-
+// Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
 
-
-
-
-app.listen(process.env.PORT || 4003 , () => {
-  console.log('Server is running with url ' + process.env.HOST + ':' + process.env.PORT);
+// Khởi động server
+const PORT = process.env.PORT || 4003;
+app.listen(PORT, () => {
+  console.log(`Server is running at ${process.env.HOST}:${PORT}`);
 });
 
 module.exports = app;
